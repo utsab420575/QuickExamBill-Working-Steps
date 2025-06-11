@@ -1,0 +1,298 @@
+--------------------------------------Exam Bill Work--------------------------------
+
+
+*******************************1.project setup and breeze install***********************
+--------------------install project---------------------------
+1.download composer(if not installed)
+check composer and php
+
+php -v
+composer -V
+https://getcomposer.org/download/
+
+
+2.create project 
+composer create-project laravel/laravel my-project
+
+
+------------------------------Breeze Install----------------------------
+
+//Breeze Install
+
+//go to this link(no need)
+//https://laravel.com/docs/11.x/starter-kits#laravel-breeze
+
+//step1(everything should run in gitbash)
+composer require laravel/breeze --dev
+
+//step2
+php artisan breeze:install
+
+
+
+blade → ✔️ great for traditional apps
+
+yes to dark mode → ✔️ nice UX feature
+
+PHPUnit → ✔️ standard and robust testing
+
+
+
+//step3 install nodejs if not installed in your computer(for one time in pc)
+https://nodejs.org/en
+
+//step4(for this we should run it using gitbash)
+npm install
+npm run dev
+
+(press enter or ctrl+c after executing)
+
+//step5
+connect with database in .env file
+
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=quickexambill
+DB_USERNAME=root
+DB_PASSWORD=
+
+SESSION_DRIVER=file
+SESSION_LIFETIME=120
+SESSION_ENCRYPT=false
+SESSION_PATH=/
+SESSION_DOMAIN=null
+
+step6:change user table from migration if need:(phone for login with email/phone)
+	Schema::create('users', function (Blueprint $table) {
+            $table->id();
+            $table->string('name');
+            $table->string('email')->unique();
+			$table->string('phone')->nullable();
+            $table->string('photo')->nullable();
+            $table->timestamp('email_verified_at')->nullable();
+            $table->string('password');
+            $table->rememberToken();
+            $table->timestamps();
+        });
+
+
+//step7:if migration alredy done need to change table:
+| Command                        | What it does                                    |
+| ------------------------------ | ----------------------------------------------- |
+| `php artisan migrate`          | Runs unapplied migrations                       |
+| `php artisan migrate:fresh`    | Drops **all tables**, runs all migrations fresh |
+| `php artisan migrate:reset`    | Rolls back **all migrations**, no re-run        |
+| `php artisan migrate:refresh`  | Rolls back all migrations, then re-runs them    |
+| `php artisan migrate:rollback` | Rolls back only the last batch                  |
+
+//step7
+php artisan migrate
+
+//step7(From Here we can get home page and get redimate login,logout and register page)
+http://127.0.0.1:8000/
+
+
+
+
+
+
+
+
+
+
+
+***************************************2.login with phonenumber work*********************************************
+-----------------------------2.1 Login With Name Email Phone---------------------
+এখানে Register blade কে পরিবর্তন করব(নতুন ফিল্ড ফোন নাম্বার add করব,controller এ ডাটা রিসিভ করব,ডাটাবেস এ স্টোর করব।):
+//1.add phone field in register blade(resource->views->auth->register.blade.php)
+
+		<!-- Phone Number -->
+        <div class="mt-4">
+            <x-input-label for="phone" :value="__('Phone')" />
+            <x-text-input id="phone" class="block mt-1 w-full" type="tel" name="phone" :value="old('phone')" required autocomplete="tel" />
+            <x-input-error :messages="$errors->get('phone')" class="mt-2" />
+        </div>
+
+
+//2.change in App->Http->Controller->Auth->RegisteredUserController
+
+  public function store(Request $request): RedirectResponse
+    {
+        $request->validate([
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'phone' => [
+                'required',
+                'unique:users,phone',
+                'regex:/^(\+8801|8801|01)[0-9]{9}$/'
+            ],
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        ]);
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'password' => Hash::make($request->password),
+        ]);
+
+
+
+
+----------------------------------2.2 Login With Name Email Phone---------------------------------------
+এখানে login blade কে পরিবর্তন করব(email কে login বানাব এখানে যে ইনপুট দিব তা  controller এ পাঠাব এবং email/phone এবং password match করলে Login করতে পারবে।):
+//go to resource->views->auth->login.blade.php
+		<!-- Email  Address -->
+        <div>
+            <x-input-label for="email" :value="__('Email')" />
+            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autofocus autocomplete="username" />
+            <x-input-error :messages="$errors->get('email')" class="mt-2" />
+        </div>
+		
+		//change to(Email and phone)
+		 <!-- Email  Address -->
+        <div>
+            <x-input-label for="login" :value="__('Email or Phone')" />
+            <x-text-input id="login" class="block mt-1 w-full" type="text" name="login" :value="old('login')" required autofocus autocomplete="username" />
+            <x-input-error :messages="$errors->get('login')" class="mt-2" />
+        </div>
+
+
+//now we need to recive email or phoneno
+//in login blade data send to this route
+<form method="POST" action="{{ route('login') }}">
+
+//for find this route go to resource->route->auth.php
+Route::post('login', [AuthenticatedSessionController::class, 'store']);
+
+//than, go to app->Http->Controller->Auth->AuthenticatedSessionController and click  $request->authenticate();
+	public function store(LoginRequest $request): RedirectResponse
+    {
+        $request->authenticate();//now click here
+
+        $request->session()->regenerate();
+
+        return redirect()->intended(route('dashboard', absolute: false));
+    }
+
+//in app->Http->Request->LoginRequest->
+//from $request->authenticate(); go to LoginRequest and change in rules() method and authenticate() method
+
+	public function rules(): array
+    {
+        //this is for login form validation; login must be filled with string and can't empty
+        return [
+            'login' => ['required', 'string'],
+            'password' => ['required', 'string'],
+        ];
+    }
+	
+	
+	public function authenticate(): void
+    {
+        $this->ensureIsNotRateLimited();
+
+        //recive email or phone number
+        $user=User::where('email',$this->login)
+                    ->orWhere('phone',$this->login)
+                    ->first();
+        if (!$user || !Hash::check($this->password,$user->password)) {
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'login' => trans('auth.failed'),
+            ]);
+        }
+
+        /*comment:
+        Auth::login($user)
+        This logs in the given $user object.
+        Laravel stores the user ID in the session, so they are considered "authenticated."
+
+        $this->boolean('remember')
+        If remember is true, Laravel will create a long-term remember token (cookie) 
+		to keep the user logged in even after closing the browser.*/
+
+        Auth::login($user,$this->boolean('remember'));
+        RateLimiter::clear($this->throttleKey());
+    }
+	
+
+
+
+
+
+
+
+
+********************************************3. Theme Work *******************
+------------------------3.1. Admin Template Setup---------------------
+1.make blade file in resource->views
+   index.blade.php
+
+2.copy all folder(ডাউনলোডকৃত ফোল্ডার এ আছে,E:\Laravel Theme\HTML ) into public->backend->assets(newly create)
+      public->backend->assets(এর ভিতরে সব ফোল্ডার থাকবে।)
+
+
+3. E:\Laravel Theme\HTML\layouts-dark-header.html  ফাইল এর কোডগুলো app->resource->layouts->app.blade ফাইল এ কপি করে ফেলব।
+
+4.এরপর ‍app.blade file এ assets folder এর লিংক পরিবর্তন করে দিব:
+   <link href="assets/libs/flatpickr/flatpickr.min.css" rel="stylesheet" type="text/css" />
+                     To
+   <link href="{{asset('backend/assets/libs/flatpickr/flatpickr.min.css')}}" rel="stylesheet" type="text/css" />
+
+
+5.content part এ yield দিয়ে দিব এবং content এর সব ডাটা নিয়ে যাব ‍index.blade file এ
+     {{--start body--}}
+        @yield('content')
+       {{-- end body--}}
+		
+		
+6.content এর সব ডাটা নিয়ে যাব ‍index.blade file এ
+
+@extends('layouts.app')
+@section('content')
+	<section role="main" class="content-body">
+	-----
+	-----
+@endsection
+
+
+
+------------------------3.2. Dashboard Page Segmentation--------------------
+
+
+1.make another folder partials->header/footer/sidebar(header,footer,sidebar কে মেইন blade(admin_dashboard.blade) থেকে আলাদা করা হয়েছে )
+	 <!-- start: header -->
+		@include('partials.header')
+    <!-- end: header -->
+
+		<!-- start: sidebar -->
+			@include('partials.sidebar')
+        <!-- end: sidebar -->
+		
+        {{--start body--}}
+			@yield('content')
+       {{-- end body--}}
+
+   
+2.give index page for showing content
+Route::get('/dashboard', function () {
+    return view('index');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+
+------------------------3.3 script and css stack----------------
+app.blade.php file এ যাতে একাধিক css/js দেয়া সেজন্য @stack() দিয়ে দিলাম।
+<head>
+ @stack('styles')
+    @yield('styles')
+</head>
+
+
+
+@stack('scripts')
+</body>
+
+
