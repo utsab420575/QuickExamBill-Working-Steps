@@ -498,6 +498,47 @@ app.blade.php file এ যাতে একাধিক css/js দেয়া স�
 
 
 
+-----------------------6.3 Profile Change Password View Show-------------------------
+1.route বানাব change password এর জন্য
+Route::get('/user/password/change','UserPasswordChange')->name('user.password.change');
+
+2.controller থেকে chage password blade view করাব
+	 public function UserPasswordChange(){
+        return view('user_profile.change_password');
+    }//End method
+	
+3.view টি বানাব
+	php artisan make:view user_profile.change_password
+
+4.header এ change password এর option দিয়ে দিব।
+	<!-- item-->
+	<li>
+		<a role="menuitem" tabindex="-1" href="{{route('user.password.change')}}"><i class="bx bx-user-circle"></i>Change Password</a>
+	</li>
+
+
+
+
+---------------------------6.4. Admin Profile Change Password Part 2---------------------
+এখানে আমরা password database এ ঢুকাব
+Typical Form Inputs Expected(পূর্বের ফরম এ input field এর name এভাবে দিব:):
+old_password
+
+new_password
+
+new_password_confirmation
+
+1.save button এ প্রেস করলে ডাটা প্রসেসিং এর জন্য controller এ পাঠাব:
+Route::post('/user/password/update','UserPasswordUpdate')->name('user.password.update');
+
+
+2.controller এ validation এবং ডাটা সেভ হবে ডাটাবেসে।
+  public function UserPasswordUpdate(Request $request){}
+ 
+3.change_password blade এ url পরিবর্তন করব
+<form method="POST" action="{{route('user.password.update')}}" class="p-3">
+
+
 	 
 	 
 
