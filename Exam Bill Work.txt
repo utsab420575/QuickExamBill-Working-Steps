@@ -483,6 +483,18 @@ app.blade.php file এ যাতে একাধিক css/js দেয়া স�
 
 4.make view from E:/Laravel Theme/HTML/pages-user-profile.html
 	(এখানে view তে user এ save কৃত ডাটাগুলো show করানো হয়েছে।)
+	
+
+
+
+------------------------------------6.2 profile update-------------------------------
+1.route create:
+ Route::post('/user/profile/store', 'UserProfileStore')->name('user.profile.store');
+ 
+
+2.controller create:
+	public function UserProfileStore(Request $request)
+    { data save into database}
 
 
 
