@@ -461,6 +461,33 @@ app.blade.php file এ যাতে একাধিক css/js দেয়া স�
 	 <span class="name">{{$userData->name}}</span>
 	 
 	 
+	 
+
+
+*********************************************6.Admin Profile Show and Update*******************************
+
+------------------------------------6.1 profile view------------------------------
+
+1.route make:
+	Route::get('/user/profile', 'UserProfile')->name('user.profile');
+    Route::post('/user/profile/store', 'UserProfileStore')->name('user.profile.store');
+
+2.controller for show send data to view:
+	 public function UserProfile(){
+        $user = auth()->user();
+
+        return view('user_profile_view',compact('user'));
+    }
+3.view make:
+	php artisan make:view user_profile.user_profile_view
+
+4.make view from E:/Laravel Theme/HTML/pages-user-profile.html
+	(এখানে view তে user এ save কৃত ডাটাগুলো show করানো হয়েছে।)
+
+
+
+	 
+	 
 
 
 
