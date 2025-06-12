@@ -296,3 +296,45 @@ app.blade.php file এ যাতে একাধিক css/js দেয়া স�
 </body>
 
 
+
+
+
+**************************************4 Header Work*************************************
+
+--------------------------------4.1 User Logout Option----------------------
+
+	controller বানাব,:
+		php artisan make:controller UserController
+	
+	route বানাব:
+	Route::get('user/logout',[UserController::class,'UserDestroy'])->name('user.logout');
+	
+	
+	make controller code for logout(এই logout এর code copy করছি->  logout ...................................... logout › Auth\AuthenticatedSessionController@destroy ): থেকে।
+	class AdminController extends Controller
+	{
+		public function UserDestroy(Request $request): RedirectResponse
+		{
+			//destroy current session;You're logging out a user who is logged in via session-based authentication
+			Auth::guard('web')->logout();
+
+			$request->session()->invalidate();
+
+			$request->session()->regenerateToken();
+
+			//redirect to login page after logout; if you want to home page return redirect('/');
+			return redirect('/login');
+		}
+	}
+	
+	header এ পরিবর্তন:
+	(logout এ ক্লিক করলে logout হয়ে যাবে:) logout work(views->partials->header)
+					<!-- item-->
+                    <a href="{{route('user.logout')}}" class="dropdown-item notify-item">
+                        <i class="fe-log-out"></i>
+                        <span>Logout</span>
+                    </a>
+
+
+
+	
