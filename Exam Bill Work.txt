@@ -337,7 +337,7 @@ app.blade.php file এ যাতে একাধিক css/js দেয়া স�
 
 
 ------------------------------------------------4.2. Customize Login Form------------------------------------
-1.copy auth_login(file:///E:/Laravel Theme/HTML/pages-signin.html) file to resourse->views->user_header->signin.blade.php file
+1.copy auth_login(file:///E:/Laravel Theme/HTML/pages-signin.html) file to resourse->views->auth->login.blade.php file
 
 
 2.default email,password এর নাম পরিবর্তন করব:
@@ -413,4 +413,16 @@ app.blade.php file এ যাতে একাধিক css/js দেয়া স�
         }
 	
 
+
+
+------------------------------------------------4.3. Customize Register Form------------------------------------
+1.copy auth_login(file:///E:/Laravel Theme/HTML/pages-signup.html) file to resourse->views->auth->register.blade.php file
+
+2.change register.blade.php file according to my need;(see this commit with name: 4.3)
+
+3.form data store into database using route and  controller:
+	route: app->resource->route->auth.php->
+			Route::post('register', [RegisteredUserController::class, 'store']);
 	
+	controller:
+	go to: app->Http->controller->auth->RegisteredUserController
