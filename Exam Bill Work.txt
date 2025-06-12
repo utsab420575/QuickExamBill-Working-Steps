@@ -426,3 +426,46 @@ app.blade.php file এ যাতে একাধিক css/js দেয়া স�
 	
 	controller:
 	go to: app->Http->controller->auth->RegisteredUserController
+	
+	
+	
+
+
+************************************ 5 Theme/Dashboard Clear ************************************************
+
+----------------------------------5.1. Refresh Admin Template-----------------------
+1.here we remove unneccessary option from left sidebar,header,main dashboard(index page)
+
+
+2.clear left sidebar
+				<li>
+					<a class="nav-link" href="{{route('dashboard')}}">
+						<i class="bx bx-home-alt" aria-hidden="true"></i>
+						<span>Dashboard</span>
+					</a>
+				</li>
+
+3.clear index.blade(dashboard)
+
+-----------------------------------5.2 Header Profile image,name change-------------------------
+1.Login কৃত user এর ডাটা বের করব।
+	 @php
+            $id = Auth::user()->id;
+            $userData = App\Models\User::find($id);
+        @endphp
+
+2.User এর ডাটা show করাব।
+	 <img src="{{ (!empty($userData->photo)) ? url('upload/admin_image/'.$userData->photo) : url('upload/no_image.jpg') }}" alt="user-image" class="rounded-circle">
+	 
+	 
+	 <span class="name">{{$userData->name}}</span>
+	 
+	 
+
+
+
+
+	
+
+
+
