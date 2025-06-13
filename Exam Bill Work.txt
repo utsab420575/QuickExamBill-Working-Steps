@@ -519,7 +519,7 @@ Route::get('/user/password/change','UserPasswordChange')->name('user.password.ch
 
 
 
----------------------------6.4. Admin Profile Change Password Part 2---------------------
+---------------------------6.4.  Profile Change Password---------------------
 এখানে আমরা password database এ ঢুকাব
 Typical Form Inputs Expected(পূর্বের ফরম এ input field এর name এভাবে দিব:):
 old_password
