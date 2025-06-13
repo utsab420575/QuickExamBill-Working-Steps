@@ -676,6 +676,87 @@ controller:
 	public function ImportDesignationtTable(){}
 	public function ImportDepartmentTable(){}
 	public function ImportTeacherTable(){}
+	
+	
+	
+	
+
+-----------------------------------------8.4 Toast message showing-----------------------------------
+########################show toastr in login panel after logout############
+1.Go to logout url
+ Route::get('/user/logout','destroy')->name('user.logout');
+
+2.Go to destroy method in UserController
+	public function destroy(Request $request): RedirectResponse
+    {
+        Auth::guard('web')->logout();
+
+        $request->session()->invalidate();
+
+        $request->session()->regenerateToken();
+		
+        //After logout redirect to login and send session data for showing tostr message
+        $notification=array(
+            "message"=>'Profile Logout Sucessfully',
+            "alert-type"=>'info');
+        return redirect()->route('login')->with($notification);
+        //return redirect('/login')->with($notification);
+    }
+3.In login page show toastr(login page যেহেতু extend করে নাই তাই এখানে import করে নিব।toastr এর সব link)
+<script>
+    @if(Session::has('message'))
+        toastr.options = {
+        "closeButton": true,
+        "progressBar": true,
+        "positionClass": "toast-top-right",
+        "timeOut": "4000"
+    };
+
+    var type = "{{ Session::get('alert-type', 'info') }}";
+    switch (type) {
+        case 'info':
+            toastr.info("{{ Session::get('message') }}");
+            break;
+
+        case 'success':
+            toastr.success("{{ Session::get('message') }}");
+            break;
+
+        case 'warning':
+            toastr.warning("{{ Session::get('message') }}");
+            break;
+
+        case 'error':
+            toastr.error("{{ Session::get('message') }}");
+            break;
+    }
+    @endif
+</script>
+
+
+########################after login showing tostr##################
+1.go to login route
+Route::get('login', [AuthenticatedSessionController::class, 'create'])
+        ->name('login');
+		
+2.go to  AuthenticatedSessionController and send message to dashboard
+	public function store(LoginRequest $request): RedirectResponse
+    {
+        // Log the login attempt
+        Log::info('Login attempt started', ['user_name' => $request->input('email_or_username')]);
+        $request->authenticate();
+
+        $request->session()->regenerate();
+
+        //After login showing Login successfully
+        $notification=array(
+            "message"=>'Profile Login Sucessfully',
+            "alert-type"=>'info');
+
+        return redirect()->intended(RouteServiceProvider::HOME)->with($notification);
+    }
+	
+3.Toastr will showing
 
 	
 
