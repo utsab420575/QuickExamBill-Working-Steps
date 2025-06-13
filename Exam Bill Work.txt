@@ -539,8 +539,75 @@ Route::post('/user/password/update','UserPasswordUpdate')->name('user.password.u
 <form method="POST" action="{{route('user.password.update')}}" class="p-3">
 
 
+
+****************************************************7 Toast Showing *******************************************
+
+------------------------------------------7.1 Toast Added---------------------------------
+এটার সকল স্টেপ E:\Essesntial-Laravel-Command\Toastr Message.txt এ আছে।
+commit এ গেলে দেখতে পারব।
+
+Toast এর কাজ পরবর্তী commit এ দেখতে পারব।
+
+
+**************************************************8 import data from ugr****************************************
+
+--------------------------------------------------8.1 blade showing for import data----------------------------
+1.api making in ugr(api বানালাম ugr এ):
+		app->resource->route->api.php
+		
+		Route::get('/users', function (Request $request) {
+			$apiKey = $request->header('X-API-KEY');
+
+			if ($apiKey !== 'EXAMBILL_98745012') {
+				return response()->json(['message' => 'Unauthorized'], 401);
+			}
+
+			$teachers = User::where('usertype', 'teacher')
+				->with(['teacher:id,user_id,phoneno']) // eager load only required fields
+				->get(['id', 'name', 'email', 'password']); // select only required user fields
+
+			// Optional: format response to include phoneno directly at top-level
+			$teachers = $teachers->map(function ($user) {
+				return [
+					'name' => $user->name,
+					'email' => $user->email,
+					'password' => $user->password,
+					'phoneno' => $user->teacher->phoneno ?? null,
+				];
+			});
+
+			return response()->json($teachers);
+		});
 	 
-	 
+
+2.controller make:
+	php artisan make:controller ImportExportController
+
+2.route:
+	Route::controller(ImportExportController::class)->group(function(){
+        Route::get('import/all/table','ImportAllTable')->name('import.all.table');
+    });
+
+3.view make:
+	php artisan make:view import_export.import_table
+4.controller method:
+	public function ImportAllTable(){
+        return view('import_export.import_table');
+    }
+
+
+Note:(এখানে আমরা view টি complete করলাম।accordion use করছি + table use করেছি।)
+
+(এখানে Toaster এর সাথের jquery ‍add করার কারনে সমস্যা হয়েছিল যা সমাধান করেছি।(কমেন্ট করে দিছি।))
+<!-- Toaster js -->
+<!-- if we add jquery 3.6.0 this will cause error ; beacuse we already added jquery from backend/assets/vendor/jquery/jquery.js-->
+{{--<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>--}}
+
+Note:choose button এ ক্লিক করলে image দেখানোর script file আলাদাভাবে add করেছি।
+ {{--this is for to make workable image choose box--}}
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+	
+	
 
 
 
