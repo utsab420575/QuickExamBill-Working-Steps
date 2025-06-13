@@ -646,5 +646,15 @@ Note:choose button এ ক্লিক করলে image দেখানো�
 
 	
 
+-----------------------------------------------8.3 here we make migration for faculty,department,designation,teacher--------------------
+artisan command:
+	php artisan make:model Faculty -m
+	php artisan make:model Department -m
+	php artisan make:model Designation -m
+	php artisan make:model Teacher -m
+	
+migration make:
+	see in commit 
+	
 
 
