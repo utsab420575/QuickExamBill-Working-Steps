@@ -655,6 +655,28 @@ artisan command:
 	
 migration make:
 	see in commit 
+
+api make in ugr:
+	see in resource->route->api.php
+
+route:
+	 Route::controller(ImportExportController::class)->group(function(){
+        Route::post('import/table/users','ImportUserTable')->name('import.table.users');
+        Route::post('import/table/faculties','ImportFacultyTable')->name('import.table.faculties');
+        Route::post('import/table/departments','ImportDepartmentTable')->name('import.table.departments');
+        Route::post('import/table/designations','ImportDesignationTable')->name('import.table.designations');
+        Route::post('import/table/teachers','ImportTeacherTable')->name('import.table.teachers');
+    });
+	
+
+controller:
+	public function ImportUserTable(){}
+	public function ImportFacultyTable(){}
+	public function ImportDepartmentTable(){}
+	public function ImportDesignationtTable(){}
+	public function ImportDepartmentTable(){}
+	public function ImportTeacherTable(){}
+
 	
 
 
