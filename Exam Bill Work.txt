@@ -546,7 +546,7 @@ Route::post('/user/password/update','UserPasswordUpdate')->name('user.password.u
 এটার সকল স্টেপ E:\Essesntial-Laravel-Command\Toastr Message.txt এ আছে।
 commit এ গেলে দেখতে পারব।
 
-Toast এর কাজ পরবর্তী commit এ দেখতে পারব।
+Toast এর কাজ পরবর্তী commit এ দেখতে পারব,এখানে জাস্ট cdn add করা হয়েছে।।
 
 
 **************************************************8 import data from ugr****************************************
@@ -606,10 +606,42 @@ Note:(এখানে আমরা view টি complete করলাম।accord
 Note:choose button এ ক্লিক করলে image দেখানোর script file আলাদাভাবে add করেছি।
  {{--this is for to make workable image choose box--}}
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
-	
-	
+  
+  
+  
+ 
 
 
+
+-------------------------------------8.2 import from api and import history store into database--------------------------
+এখানে আমরা ImportHistory Table এ কয়টা ডাটা import হয়েছে এবং কে করেছে তা store করব + api দিয়ে users table data import করব।
+
+1.migration	
+	php artisan make:model ImportHistory -m   
+	
+2.make migration:
+	public function up(): void
+    {
+        Schema::create('import_histories', function (Blueprint $table) {
+            $table->id();
+            $table->string('table_name');
+            $table->integer('records_inserted');
+            $table->integer('records_updated');
+            $table->string('imported_by_name');
+            $table->string('imported_by_email');
+            $table->text('details')->nullable();
+            $table->timestamps();
+        });
+    }
+
+3.route:
+	 Route::post('import/table/users','ImportUserTable')->name('import.table.users');
+4.make controller:
+	public function ImportUserTable()
+    {}
+	
+5.show data in blade;
+	import_export.import_table.blade.php
 
 
 	
