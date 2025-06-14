@@ -760,4 +760,18 @@ Route::get('login', [AuthenticatedSessionController::class, 'create'])
 
 	
 
+***********************************************************Working in project***********************************************
+
+---------------------------------------------------------9.1 create migration and model-------------------------------------
+php artisan make:model ExamType -m
+php artisan make:model Session -m
+php artisan make:model RateHead -m
+php artisan make:model RateAmount -m
+php artisan make:model RateAssign -m
+
+
+
+making model and migration for all of this
+
+
 
