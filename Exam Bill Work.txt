@@ -774,4 +774,50 @@ php artisan make:model RateAssign -m
 making model and migration for all of this
 
 
+-------------------------------------------------------9.2 thinking about route,url,controller,menu,submenu------------------------
+Controller make:
+	php artisan make:controller CommitteeInputController
+	php artisan make:controller CommitteeViewController
+	php artisan make:controller CommitteeReportController
+
+SiderBar:
+		Committee Input Manage
+			Regular
+			Review
+		Committee Record Manage
+			Regular
+			Review
+		Committee Report Manage
+			Regular
+			Review
+
+make route:
+	showing session blad and session wise input form:
+	Route::prefix('committee/input')->controller(CommitteeInputController::class)->group(function () {
+        Route::get('regular/session', 'RegularSessionShow')->name('committee.input.regular.session');
+        Route::get('review/session', 'ReviewSessionShow')->name('committee.input.review.session');
+
+        Route::get('regular/session/form/{sid}', 'sessionsRegularForm')->name('committee.input.regular.session.form');
+        Route::get('review/session/form/{sid}', 'sessionsReviewForm')->name('committee.input.review.session.form');
+    });
+
+view make:
+	 php artisan make:view committee_input.session_view.regular_session_list
+	 php artisan make:view committee_input.session_view.review_session_list
+
+ApiData:(api থেকে ডাটা নেয়ার জন্য service এর ভিতরে ApiData নামে class বানাব।)
+	ApiData থেকে আমরা ডাটা নিব।
+	public static function getRegularSessions(){}
+	public static function getReviewSessions(){}
+	
+controller method:
+		public function regularSessionShow(){}
+		public function reviewSessionShow(){}
+		 
+	
+
+
+
+
+
 
